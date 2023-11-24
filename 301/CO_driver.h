@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#include "CO_config.h"
+#include "../../src/CO_config.h"
 #include "CO_driver_target.h"
 
 #ifdef __cplusplus
