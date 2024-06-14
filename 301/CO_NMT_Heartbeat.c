@@ -24,6 +24,7 @@
  */
 
 #include "301/CO_NMT_Heartbeat.h"
+#include "synhal_delay.h"
 
 
 /*
@@ -239,10 +240,12 @@ CO_NMT_reset_cmd_t CO_NMT_process(CO_NMT_t *NMT,
                         || NMTstateCpy != NMT->operatingStatePrev)
     )) {
         NMT->HB_TXbuff->data[0] = (uint8_t) NMTstateCpy;
-        CO_CANsend(NMT->HB_CANdevTx, NMT->HB_TXbuff);
 
         if (NMTstateCpy == CO_NMT_INITIALIZING) {
             /* NMT slave self starting */
+            // add a delay because ROS is missing the bootup all the time
+            synhal_delay(100);
+            CO_CANsend(NMT->HB_CANdevTx, NMT->HB_TXbuff);
             NMTstateCpy = (NMT->NMTcontrol & CO_NMT_STARTUP_TO_OPERATIONAL) != 0
                           ? CO_NMT_OPERATIONAL : CO_NMT_PRE_OPERATIONAL;
         }
@@ -251,6 +254,7 @@ CO_NMT_reset_cmd_t CO_NMT_process(CO_NMT_t *NMT,
              * occur. However, heartbeat is not for synchronization, it is for
              * health report. In case of initializing, timer is set in the
              * CO_NMT_init() function with pre-defined value. */
+            CO_CANsend(NMT->HB_CANdevTx, NMT->HB_TXbuff);
             NMT->HBproducerTimer = NMT->HBproducerTime_us;
         }
     }
