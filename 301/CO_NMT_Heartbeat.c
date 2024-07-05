@@ -244,7 +244,7 @@ CO_NMT_reset_cmd_t CO_NMT_process(CO_NMT_t *NMT,
         if (NMTstateCpy == CO_NMT_INITIALIZING) {
             /* NMT slave self starting */
             // add a delay because ROS is missing the bootup all the time
-            synhal_delay(100);
+            synhal_delay(200);
             CO_CANsend(NMT->HB_CANdevTx, NMT->HB_TXbuff);
             NMTstateCpy = (NMT->NMTcontrol & CO_NMT_STARTUP_TO_OPERATIONAL) != 0
                           ? CO_NMT_OPERATIONAL : CO_NMT_PRE_OPERATIONAL;
